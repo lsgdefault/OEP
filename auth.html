@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <title>
+            Auth try
+        </title>
+    </head>
+    <body>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+
+   
+
+    <!-- TODO: Add SDKs for Firebase products that you want to use
+         https://firebase.google.com/docs/web/setup#available-libraries -->
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+    
+    <script>
+      // Your web app's Firebase configuration
+      // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+      var firebaseConfig = {
+        apiKey: "AIzaSyCJL8ulu_ZI6kd0cih_-d6tfqDBuV5hYEY",
+        authDomain: "oepproject-10f9c.firebaseapp.com",
+        projectId: "oepproject-10f9c",
+        storageBucket: "oepproject-10f9c.appspot.com",
+        messagingSenderId: "121866197936",
+        appId: "1:121866197936:web:9f228897749434cb519475",
+        measurementId: "G-6GDMDW75VZ"
+      };
+      // Initialize Firebase
+      firebase.initializeApp(firebaseConfig);
+      firebase.analytics();
+    </script>
+<script>
+
+   
+    firebase.auth().createUserWithEmailAndPassword("abc@gmail.com", "12345").catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      console.log("Eroor Msg"  + errorMessage);
+
+      // ...
+    });
+
+</script>
+
+    </body>
+</html>

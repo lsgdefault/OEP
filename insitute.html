@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+        <title>Register - OEP</title>
+        <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+        <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+        <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+        <link rel="stylesheet" href="assets/css/untitled.css">
+        <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+    </head>
+
+<body class="bg-gradient-primary" style="background: #75b2dd;">
+    <div class="container">
+        <div class="card shadow-lg o-hidden border-0 my-5">
+            <div class="card-body p-0">
+                <div class="row">
+                    <div class="col-lg-5 d-none d-lg-flex"><img class="d-xl-flex justify-content-center align-items-center align-content-center align-self-center mx-auto justify-content-xl-center align-items-xl-center" src="assets/img/images/oep-logo.jpg" style="width: 367px;height: 154px;"></div>
+                    <div class="col-lg-7">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h4 class="text-dark mb-4">Register an Insitute !</h4>
+                            </div>
+                                <div class="form-group">
+                                    <input class="form-control form-control-user" type="text" id="i_name" aria-describedby="" placeholder="Enter Insitute Name....." name="fname" style="margin-top: 17px;">
+                                    <input class="form-control form-control-user" type="tel" id="i_phno" aria-describedby="" placeholder="Enter Phone Number...." name="mname" style="margin-top: 17px;">
+                                    <input class="form-control form-control-user" type="text" id="i_address" aria-describedby="" placeholder="Enter Address...." name="lname" style="margin-top: 17px;">
+                                    <input class="form-control form-control-user" type="number" id="i_pin" aria-describedby="" placeholder="Enter PIN Code....." name="email" style="margin-top: 17px;">
+                                  </div>
+                                <div class="form-group row">
+                                </div><button class="btn btn-primary btn-block text-white btn-user" type="submit" onclick="insituteRegister()">Register Insitute</button>
+
+                            <div class="text-center"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/chart.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
+    <script src="assets/js/theme.js"></script>
+    
+    <script src="firebase.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>

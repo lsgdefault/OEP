@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Dashboard - OEP</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+    <style> 
+        .zoomdiv { 
+  
+        
+            transition: transform .6s; 
+             
+            margin: 0 auto; 
+            border-radius: 29px; 
+            
+        } 
+        .zoomdiv:hover { 
+            -ms-transform: scale(1.6); 
+            /* IE 9 */ 
+            -webkit-transform: scale(1.1); 
+            /* Safari 3-8 */ 
+            transform: scale(1.1); 
+
+        } 
+
+        .float-container {
+      border: 3px solid #fff;
+        padding: 20px;
+        }   
+
+        .float-child {
+            width: 50%;
+            float: left;
+            padding: 20px;
+        
+        }  
+
+
+    </style> 
+    <script>
+        var studentid =[];
+        function addRow() 
+        {
+            
+            
+            var classid = sessionStorage.getItem("classid");
+       
+                firebase.auth().onAuthStateChanged((user) => {
+                if (user) {      
+                    var uid = firebase.auth().currentUser;
+                    if(user != null){                    
+                        var uid= user.uid;
+                        var useremail = user.email;
+                        var name= user.displayName;       
+                
+                        firebase.database().ref().orderByChild('Faculty/'+uid+'/mailid').equalTo(useremail).once("value", function(snapshot) {
+                        snapshot.forEach(
+                            function(parent) 
+                            { 
+                            instname = parent.key;            
+                            });
+
+                      
+                        firebase.database().ref( instname+ '/Student').orderByChild("Enroll").once('value',function(snapshot)
+                        { 
+                                var sid;
+                                var i=0;
+                                snapshot.forEach(function(ChildSnapshot)
+                                {
+                                    if(ChildSnapshot.child("ClassID").val()==classid)
+                                    {
+                                       var enroll = ChildSnapshot.child('Enroll').val();
+                                         sid = ChildSnapshot.key;
+                                        studentid.push(sid);
+                                        var table = document.getElementById('dataTableStudentInfo');
+                                  
+                                        var rowCount = table.rows.length;
+                                        row = table.insertRow(rowCount);
+
+                                        row.id= i;
+
+                                        var classname=".row-data-"+enroll;
+                                        var cell1 = row.insertCell(0);
+                                        cell1.innerHTML = enroll ;
+
+                                        var cell2 = row.insertCell(1);
+                                        var fname = ChildSnapshot.child("Name").val();
+                                        var lname = ChildSnapshot.child("LastName").val();
+                                        cell2.innerHTML =fname + " "+ lname ;
+                                        
+                                        var cell3 = row.insertCell(2);
+                                        var mail = ChildSnapshot.child("mailid").val();
+                                        cell3.innerHTML =mail ;	
+                                        
+                                        var cell4 = row.insertCell(3);
+                                    
+                                        var element1 = document.createElement("input");
+                                        element1.id = i + "button";
+                                        element1.type = "button";
+                                        element1.name = "submit[]";
+                                        element1.value = "Remove";
+                                        element1.onclick = function() {removeStudent()};
+                                        cell4.appendChild(element1);
+                                        i++;
+                                                      
+                                    }
+                                } );
+                        });
+                    });
+                }
+    } else  {
+      window.location.href="login.html";
+    }
+  } );
+
+  function removeStudent(sid)
+  {
+    
+    var rowId = event.target.parentNode.parentNode.id;
+    var classname = ".row-data-" + rowId
+    var x = document.getElementsByClassName(classname);
+
+    var sid = studentid[rowId];
+
+    firebase.database().ref( instname+ '/Student/'+sid).child("ClassID").remove();
+
+    document. location. reload() 
+ 
+    // var Ename = x[0].innerHTML;
+    // var subjectname = x[1].innerHTML;
+  }
+          		
+}
+    </script>
+    
+</head>
+
+<body id="page-top" onload="getuserdata(),addRow() ">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
+           <div class="container-fluid d-flex flex-column p-0" onclick="callhome()"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15" ><i class="fas fa-laugh-wink"></i></div>
+                    <div class="sidebar-brand-text mx-3"><span>OEP</span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="nav navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link active" href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="profile.html"><i class="fas fa-user"></i><span>Profile</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="fresult.html"><i class="fas fa-table"></i><span>Results</span></a></li>
+                    <!-- <li class="nav-item"><a class="nav-link" href="login.html"><i class="far fa-user-circle"></i><span>Login</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="register.html"><i class="fas fa-user-circle"></i><span>Register</span></a></li> -->
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle mr-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                       
+                        <ul class="nav navbar-nav flex-nowrap ml-auto">
+                            <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#"><i class="fas fa-search"></i></a>
+                            
+                            </li>
+                           
+                           
+                            <div class="d-none d-sm-block topbar-divider"></div>
+                            <li class="nav-item dropdown no-arrow">
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#"><span class="d-none d-lg-inline mr-2 text-gray-600 small" id="username">@username</span><img class="border rounded-circle img-profile" id="dp" src="assets/img/avatars/avatar1.jpeg"></a>
+                                    <div class="dropdown-menu shadow dropdown-menu-right animated--grow-in">
+                                        <a class="dropdown-item" href="profile.html"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Profile</a>
+                                        <div class="dropdown-divider"></div><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                </nav>
+                <div class="container-fluid">
+                    
+                        <div class="col-md-6 col-xl-3 mb-4 zoomdiv" onclick="callstudent()">
+                            <div class="card shadow border-left-success py-2">
+                                <div class="card-body" style="cursor: pointer;">
+                                    <div class="row align-items-center no-gutters">
+                                        <div class="col mr-2">
+                                            <div class="text-uppercase text-success font-weight-bold text-xs mb-1"><span>ADD STUDENTS</span></div>
+                                            <div class="text-dark font-weight-bold h5 mb-0"><span></span></div>
+                                        </div>
+                                        <div class="col-auto"><i class="fas fa-dollar-sign fa-2x text-gray-300"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                   
+                        <div class="col-md-6 col-xl-3 mb-4 zoomdiv" onclick="callsubject()">
+                            <div class="card shadow border-left-warning py-2" >
+                                <div class="card-body" style="cursor: pointer;">
+                                    <div class="row align-items-center no-gutters">
+                                        <div class="col mr-2">
+                                            <div class="text-uppercase text-warning font-weight-bold text-xs mb-1"><span>ADD SUBJECT</span></div>
+                                            
+                                        </div>
+                                        <div class="col-auto"><i class="fas fa-comments fa-2x text-gray-300"></i></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="container-fluid">
+                        <h3 class="text-dark mb-4">Student</h3>
+                        <div class="card shadow">
+                            <div class="card-header py-3">
+                                <p class="text-primary m-0 font-weight-bold">Student Info</p>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-6 text-nowrap">
+                                        <div id="dataTable_length" class="dataTables_length" aria-controls="dataTable3"></div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="text-md-right dataTables_filter" id="dataTable_filter"></div>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6 text-nowrap">
+                                          
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="text-md-right dataTables_filter" id="dataTable_filter"><label><input type="search" onkeyup="search()" class="form-control form-control-sm" id="searchTextBoxid" aria-controls="dataTable" placeholder="Search"></label></div>
+                                        </div>
+                                    </div>
+                                <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                                    <table class="table my-0" id="dataTableStudentInfo">
+                                        <thead>
+                                            <tr>
+                                                <th>Enrollment Number</th>
+                                                <th>Student Name</th>
+                                                <th>Email address</th>
+                                                <th>Action</th>
+    
+                                               
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                          
+                                            </tbody>
+                                     </table>
+                                </div>
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <footer class="bg-white sticky-footer">
+                    <div class="container my-auto">
+                        <div class="text-center my-auto copyright"><span>Copyright © OEP 2021</span><br><br>
+                        <span><a href="ContactFrom_v10\Contactus.html"target="_blank">Contact Us</a></span>&emsp;
+                        <span><a href="Aboutus.html" target="_blank">About Us</a></span>
+                        </div>
+                    </div>
+                </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <script>
+        function callstudent() {
+            window.location.href = "AddStudent.html";
+        }
+        
+        function callsubject() {
+            window.location.href = "Subjectadd.html";
+        }
+    </script>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/chart.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
+    <script src="assets/js/theme.js"></script>
+    <script src="firebase.js"></script>
+    <script src="main.js"></script>
+    <script>
+        function search()    
+            {    
+            var input, filter, table, tr, td, i;    
+            input = document.getElementById("searchTextBoxid"); //to get typed in keyword    
+            filter = input.value.toUpperCase(); //to avoid case sensitive search, if case sensitive search is required then comment this line    
+            table =document.getElementById("dataTableStudentInfo"); //to get the html table    
+            tr = table.getElementsByTagName("tr"); //to access rows in the table    
+            var countvisble=0; //to hide and show the alert label    
+            // Search all table rows, hide those who don't match the search key word    
+            for(i=0;i<tr.length;i++)    
+            {    
+                td=tr[i].getElementsByTagName("td")[0]; //search keyword searched only in 1st column of the table, if you want to search other columns then change [0] to [1] or any required column number    
+                td1=tr[i].getElementsByTagName("td")[1];
+                if(td)    
+                {    
+                    if(td.innerHTML.toUpperCase().indexOf(filter)>-1)    
+                    {    
+                        countvisble++;    
+                        tr[i].style.display="";    
+                
+                    }    
+                    else if(td1)    
+                    {    
+                            if(td1.innerHTML.toUpperCase().indexOf(filter)>-1)    
+                            {    
+                                countvisble++;    
+                                tr[i].style.display="";    
+                                
+                            }    
+                            else    
+                            {    
+                                tr[i].style.display = "none";    
+                              
+                            }    
+                     }   
+                }   
+                  
+            }    
+            if(countvisble==0) //displays the alert message label    
+            {    
+                
+               
+            }    
+}   
+    </script>
+    
+</body>
+
+</html>

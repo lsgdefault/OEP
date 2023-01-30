@@ -1,0 +1,193 @@
+<HTML>
+<HEAD>
+	<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+	<TITLE> Add/Remove dynamic rows in HTML table </TITLE>
+	<link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+	<SCRIPT language="javascript">
+        const queryString = window.location.search;
+        
+        const urlParams = new URLSearchParams(queryString);
+		// var admin = require('firebase-admin');
+        var from = urlParams.get('from');
+        var to = urlParams.get('to');
+        var pass = urlParams.get('pass');
+        var faculty_id = urlParams.get('faculty_id');
+        var i_name = urlParams.get('i_name');
+
+		function addRow(tableID) {
+
+            for( var i=from;i<=to;i++)
+            {
+
+			var table = document.getElementById(tableID);
+
+			var rowCount = table.rows.length;
+			row = table.insertRow(rowCount);
+
+            row.id= i;
+
+            var classname=".row-data-"+i;
+
+  
+
+            var cell1 = row.insertCell(0);
+			cell1.innerHTML = i ;
+	
+
+			var cell2 = row.insertCell(1);
+			var element1 = document.createElement("input");
+            element1.id= i+"name";
+			element1.type = "text";
+			element1.name="text[]";
+            element1.className+=classname;
+			cell2.appendChild(element1);
+
+
+			var cell3 = row.insertCell(2);
+			var element2 = document.createElement("input");
+			element2.id= i+"mname";
+			element2.type = "text";
+			element2.name = "txtbox[]";
+            element2.className+=classname;
+			cell3.appendChild(element2);
+
+            var cell4 = row.insertCell(3);
+			var element3 = document.createElement("input");
+			element3.id= i+"lname";
+			element3.type = "text";
+			element3.name = "txtbox[]";
+            element3.className +=classname;
+			cell4.appendChild(element3);
+
+            var cell5 = row.insertCell(4);
+			var element4 = document.createElement("input");
+			element4.id= i+"email";
+			element4.type = "text";
+			element4.name = "txtbox[]";
+            element4.className +=classname;
+			cell5.appendChild(element4);
+
+            var cell6 = row.insertCell(5);
+			var element5 = document.createElement("input");
+            element5.id= i+"button";
+			element5.type = "button";
+			element5.name = "submit[]";
+            element5.value= "Submit";
+            element5.onclick= function(){show()};
+			cell6.appendChild(element5);
+
+            }
+
+			
+			firebase.database().ref( i_name+'/Student').on('value',function(snapshot)
+			{
+         		 var i=0;
+         		 snapshot.forEach(function(ChildSnapshot)
+				{
+						var enroll = ChildSnapshot.child('Enroll').val();
+					
+             			if(enroll>=from && enroll<=to)
+						 {
+							// var cell= document.getElementById(enroll).cells[0].innerHTML;
+							var key = ChildSnapshot.key;
+							var name= document.getElementById(enroll+"name");
+							var mname= document.getElementById(enroll+"mname");
+							var lname= document.getElementById(enroll+"lname");
+							var email= document.getElementById(enroll+"email");
+							name.value=ChildSnapshot.child("Name").val();
+							mname.value=ChildSnapshot.child("MiddleName").val();
+							lname.value=ChildSnapshot.child("LastName").val();
+							email.value=ChildSnapshot.child("mailid").val();	
+							
+							var button = document.getElementById(enroll+"button");
+
+							button.disabled= true;
+							email.disabled= true;
+							lname.disabled= true;
+							mname.disabled= true;
+							name.disabled= true;
+
+						}
+					}
+         	    );
+   		    });
+		}
+
+		
+        function show() 
+        {   
+                var rowId =  event.target.parentNode.parentNode.id; 
+                var classname= ".row-data-"+rowId
+                var x = document.getElementsByClassName(classname);
+				// createbulkstudents(x,pass,faculty_id,i_name);
+		
+				var s_fname = x[0].value;
+				var s_mname = x[1].value;
+				var s_lname = x[2].value;
+				var email = x[3].value; 
+
+				
+				
+				firebase.auth().createUserWithEmailAndPassword(email, pass).then((user) => {
+					// Signed in 
+					let auth=firebase.auth().currentUser;
+					var institute = i_name;
+					let uid = auth.uid;
+					if(user){
+					
+				
+					auth.updateProfile({
+						displayName: s_fname+ " " + s_lname
+					})
+					}
+					let yourdata = { Name: s_fname , MiddleName: s_mname, LastName : s_lname, Enroll: rowId, facultyid: faculty_id, mailid: email}   
+					firebase.database().ref( institute+'/Student').child(uid).set(yourdata).then(ok => window.alert("Successfull")).catch(console.error) ;
+
+					// ...
+				}).catch(function(error) {
+					// Handle Errors here.
+					var errorCode = error.code;
+					var errorMessage = error.message;
+					console.log("Error Msg"  + errorMessage);
+
+					// ...
+				}); 
+              
+				// alert("Function Triggered");
+			}
+
+
+	</SCRIPT>
+
+</HEAD>
+<BODY onLoad="addRow('dataTable')">
+
+	<!-- <INPUT type="button" value="Add Row" onclick="addRow('dataTable')" />
+
+	<INPUT type="button" value="Delete Row" onclick="deleteRow('dataTable')" /> -->
+	<table class="table" id="dataTable" >
+		<thead class="thead-dark">
+		  <tr>
+			<th scope="col">Enroll No</th>
+			<th scope="col">First Name</th>
+			<th scope="col">Middle Name</th>
+			<th scope="col">Last Name</th>
+			<th scope="col">Email</th>
+			<th></th>
+		  </tr>
+		</thead>		
+	  </table> 
+	 
+	
+	<script src="firebase.js"></script>
+    <script src="main.js"></script>
+</BODY>
+</HTML>

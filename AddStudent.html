@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Add Student - OEP</title>
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/5.4.1/css/bootstrap.min.css"> -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+    <SCRIPT language="javascript">
+        var instname;
+        var from;
+        var to;
+        var classKey = sessionStorage.getItem("classid");
+   
+		function addRow(tableID) 
+        {
+            var tb = document.getElementById(tableID);
+            while(tb.rows.length > 1) {
+                 tb.deleteRow(1);
+                }
+             from = document.getElementById("from").value;
+             to = document.getElementById("to").value;
+           
+             if(from == "" || to == "" )
+             {
+                 alert("Pls enter all details!!");
+             } 
+             else 
+             {
+           
+                firebase.auth().onAuthStateChanged((user) => {
+                if (user) {      
+                    var uid = firebase.auth().currentUser;
+                    if(user != null){                    
+                        var uid= user.uid;
+                        var useremail = user.email;
+                        var name= user.displayName;       
+                
+                        firebase.database().ref().orderByChild('Faculty/'+uid+'/mailid').equalTo(useremail).once("value", function(snapshot) {
+                        snapshot.forEach(
+                            function(parent) { 
+                            instname = parent.key;            
+                                });
+                        alert(instname);
+                        firebase.database().ref( instname+ '/Student').orderByChild("Enroll").once('value',function(snapshot)
+                        {
+                                var i=0;
+                                snapshot.forEach(function(ChildSnapshot)
+                                {
+                                    var enroll = ChildSnapshot.child('Enroll').val();
+                                    
+                                    if(enroll>=from && enroll<=to)
+                                    {
+                                        var table = document.getElementById(tableID);
+
+                                        var rowCount = table.rows.length;
+                                        row = table.insertRow(rowCount);
+
+                                        row.id= enroll;
+
+                                        var classname=".row-data-"+enroll;
+                                        var cell1 = row.insertCell(0);
+                                        cell1.innerHTML = enroll ;
+
+                                        var cell2 = row.insertCell(1);
+                                        var fname = ChildSnapshot.child("Name").val();
+                                        var lname = ChildSnapshot.child("LastName").val();
+                                        cell2.innerHTML =fname + " "+ lname ;			
+                                        i++;
+                                    }                   
+                                    
+                                } );
+                                document.getElementById("totalsnum").innerHTML = "Total Students :  "+ i;
+                                var btn = document.getElementById("Savebtn");
+                                btn.style = "text-align: center;margin-left: 41%; display: normal;";
+                        });
+                    });
+                }
+    } else  {
+      window.location.href="login.html";
+    }
+  });
+  }         		
+}
+
+        function saveStudents()
+        {
+               firebase.database().ref( instname+ '/Student').orderByChild("Enroll").once('value',function(snapshot)
+			{
+               
+         		 snapshot.forEach(function(ChildSnapshot){                     
+						var enroll = ChildSnapshot.child('Enroll').val();
+					
+             			if(enroll>=from && enroll<=to)	 
+                         {                        
+                          
+                                        firebase.database().ref(instname+"/Student").once("value",function(snapshot){
+                                            snapshot.forEach(function(parent){
+                                       
+                                           if(parent.child("Enroll").val()==enroll)  {
+                                               var studentid = parent.key;
+                                            
+                                               firebase.database().ref(instname+"/Student/"+studentid).child("ClassID").set(classKey).catch(console.error) ;
+                                            }
+                                        });
+                                        });   
+                                                    
+						}                   
+					}
+         	    );
+              
+                 var btn = document.getElementById("Savebtn");
+                 btn.style = "text-align: center;margin-left: 41%; display: normal;";
+                 btn.onclick="saveStudents()";
+   		    });
+               alert("Succesfull");
+        }
+
+
+	</SCRIPT>    
+</head>
+
+<body id="page-top" onload="getuserdata()">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
+            <div class="container-fluid d-flex flex-column p-0" onclick="callhome()"><a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15" ><i class="fas fa-laugh-wink"></i></div>
+                    <div class="sidebar-brand-text mx-3" ><span>OEP</span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="nav navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link active" href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="profile.html"><i class="fas fa-user"></i><span>Profile</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="fresult.html"><i class="fas fa-table"></i><span>Results</span></a></li>
+                    <!-- <li class="nav-item"><a class="nav-link" href="login.html"><i class="far fa-user-circle"></i><span>Login</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="register.html"><i class="fas fa-user-circle"></i><span>Register</span></a></li> -->
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle mr-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                        
+                        <ul class="navbar-nav flex-nowrap ml-auto">
+                            <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-toggle="dropdown" href="#"><i class="fas fa-search"></i></a>
+                                <div class="dropdown-menu dropdown-menu-right p-3 animated--grow-in" aria-labelledby="searchDropdown">
+                                    <form class="form-inline mr-auto navbar-search w-100">
+                                        <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ...">
+                                            <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+                            
+                            
+                            <div class="d-none d-sm-block topbar-divider"></div>
+                            <li class="nav-item dropdown no-arrow">
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#"><span class="d-none d-lg-inline mr-2 text-gray-600 small" id="username">@username</span><img class="border rounded-circle img-profile" id="dp" src="assets/img/avatars/avatar1.jpeg"></a>
+                                    <div class="dropdown-menu shadow dropdown-menu-right animated--grow-in">
+                                        <a class="dropdown-item" href="profile.html"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Profile</a>
+                                        <div class="dropdown-divider"></div><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="p-5" style="width:800px; margin:0 auto;">
+                    <div class="text-center">
+                        <h3 class="text-dark mb-4">Add Students</h3>
+                        
+                    </div>
+                    <form class="user">
+                        <div class="form-group">
+                        <br>
+                       <!-- <label style="font-size: 20px;margin-left: 3%; ">Select Class :</label>
+                       
+                             <select class="form-select form-select-lg mb-3" style="border-radius : 50px;" name="classname" id="classdrop">
+                                              
+                            </select> -->
+                            
+                           
+                           <label style="font-size: 20px;margin-left: 3%;">Import Student :</label>
+                           <br>
+                            <label style="font-size: 20px;margin-left: 3%;">From :</label>
+                            <input class="form-control form-control-user" type="number" id="from" aria-describedby="" placeholder="Start Range" name="from" >
+                            <br>
+                            <label style="font-size: 20px;margin-left: 3%;">To :</label>
+                            <input class="form-control form-control-user" type="number" id="to" aria-describedby="" placeholder="End Range" name="to" >
+                            <br>
+                            <button class="btn btn-primary" type="button" style="text-align: center;margin-left: 41%;" onclick="addRow('dataTable')">Get Details</button>
+                            <br>
+                            <br>
+                             
+                           <label style="font-size: 20px;margin-left: 3%;" id="totalsnum">Total Students :</label>
+                           <table class="table" id="dataTable" >
+		<thead class="thead-dark">
+		  <tr>
+			<th scope="col">Enroll No</th>
+			<th scope="col">Name</th>
+		
+			<th></th>
+		  </tr>
+		</thead>		
+	  </table> 
+     
+                        <hr>
+                        <button class="btn btn-primary" type="button" style="text-align: center;margin-left: 41%; display: none;"  onclick="saveStudents()" id="Savebtn">Save </button>
+                    </form>
+                    <div class="text-center"></div>
+                    <div class="text-center"></div>
+                </div>
+            </div>
+            
+           <footer class="bg-white sticky-footer">
+                        <div class="container my-auto">
+                            <div class="text-center my-auto copyright"><span>Copyright © OEP 2021</span><br><br>
+                            <span><a href="ContactFrom_v10\Contactus.html"target="_blank">Contact Us</a></span>&emsp;
+                            <span><a href="Aboutus.html" target="_blank">About Us</a></span>
+                            </div>
+                        </div>
+                    </footer>
+        </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
+    <script src="assets/js/theme.js"></script>
+    <script src="firebase.js"></script>
+    <script src="main.js"></script>
+    
+</body>
+
+</html>

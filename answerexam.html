@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Dashboard - OEP</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+    <script src="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+    <style>
+
+  
+.timer {
+        width: 280px;
+        height: 70px;
+        border-radius: 20px;
+        color : white;
+        padding: 10px;
+        background-color :#4e73df;
+        box-shadow: rgba(0, 0, 0, 0.25) 0px 14px 28px, rgba(0, 0, 0, 0.22) 0px 10px 10px;
+        font-size: 28px;
+        padding-top: 17px;
+        text-align: center;
+        vertical-align: middle;
+        margin-left: -20px;
+
+      }
+        
+        .wrapper {
+            width: 1000px;
+            margin: 0 auto;
+            height: 600px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 3px 3px 36px rgba(0, 0, 0, 0.2)
+        }
+        
+        .wrapper .title {
+            padding: 10px;
+            color: #fff;
+            line-height: 37px;
+            
+            background: #4e73df;
+            font-size: 18px;
+            font-weight: 500;
+            border-radius: 4px 4px 0 0;
+        }
+        
+        .wrapper .box {
+            padding: 20px 30px;
+            background: #fff;
+            border-radius: 10px;
+        }
+        
+        .wrapper .box label {
+            display: flex;
+            height: 70px;
+            width: 100%;
+            align-items: center;
+            border: 1px solid lightgrey;
+            border-radius: 5px;
+            margin: 10px 0;
+            padding-left: 11px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        #optionA:checked~.optionA,
+        #optionB:checked~.optionB,
+        #optionC:checked~.optionC,
+        #optionD:checked~.optionD {
+            border-color: #4e73df;
+        }
+        
+        .wrapper .box label .select-dots {
+            height: 20px;
+            width: 20px;
+            background: #d9d9d9;
+            border-radius: 50%;
+            position: relative;
+            transition: all 0.3s ease
+        }
+        
+        #optionA:checked~.optionA .select-dots,
+        #optionB:checked~.optionB .select-dots,
+        #optionC:checked~.optionC .select-dots,
+        #optionD:checked~.optionD .select-dots {
+            background: lightgray;
+        }
+        
+        .box label .select-dots::before {
+            position: absolute;
+            content: "";
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(2);
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            transition: all 0.3s ease
+        }
+        
+        #optionA:checked~.optionA .select-dots::before,
+        #optionB:checked~.optionB .select-dots::before,
+        #optionC:checked~.optionC .select-dots::before,
+        #optionD:checked~.optionD .select-dots::before {
+            background: #4e73df;
+            transform: translate(-50%, -50%) scale(1)
+        }
+        
+        .wrapper .box label .text {
+            color: #333;
+            font-size: 15px;
+            font-weight: 400;
+            padding-left: 10px;
+            transition: color 0.3s ease
+        }
+        
+        #optionA:checked~.optionA .text,
+        #optionB:checked~.optionB .text,
+        #optionC:checked~.optionC .text,
+        #optionD:checked~.optionD .text {}
+        
+        .wrapper .box input[type="radio"] {
+            display: none
+        }
+    </style>
+</head>
+
+<body id="page-top" onload=" getuserdata(),updateques()">
+    <div id="wrapper">
+        <nav class="navbar navbar-dark align-items-start sidebar sidebar-dark accordion bg-gradient-primary p-0">
+            <div class="container-fluid d-flex flex-column p-0">
+                <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="#">
+                    <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink"></i></div>
+                    <div class="sidebar-brand-text mx-3" onclick="callhome()"><span>OEP</span></div>
+                </a>
+                <hr class="sidebar-divider my-0">
+                <ul class="nav navbar-nav text-light" id="accordionSidebar">
+                    <li class="nav-item"><a class="nav-link active" href="studentindex.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="studentprofile.html"><i class="fas fa-user"></i><span>Profile</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="viewexam.html"><i class="fas fa-book"></i><span>Exam</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href=""><i class="fas fa-circle"></i><span>Performance</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="result.html"><i class="fas fa-square"></i><span>Result</span></a></li>
+                    <!-- <li class="nav-item"><a class="nav-link" href="table.html"><i class="fas fa-table"></i><span>Table</span></a></li> -->
+                    <!-- <li class="nav-item"><a class="nav-link" href="login.html"><i class="far fa-user-circle"></i><span>Login</span></a></li>
+                    <li class="nav-item"><a class="nav-link" href="register.html"><i class="fas fa-user-circle"></i><span>Register</span></a></li> -->
+                </ul>
+                <div class="text-center d-none d-md-inline"><button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button></div>
+            </div>
+        </nav>
+        <div class="d-flex flex-column" id="content-wrapper">
+            <div id="content">
+                <nav class="navbar navbar-light navbar-expand bg-white shadow mb-4 topbar static-top">
+                    <div class="container-fluid"><button class="btn btn-link d-md-none rounded-circle mr-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+
+                        <ul class="navbar-nav flex-nowrap ml-auto">
+                            <li class="nav-item dropdown d-sm-none no-arrow"><a class="dropdown-toggle nav-link" aria-expanded="false" data-toggle="dropdown" href="#"><i class="fas fa-search"></i></a>
+                                <div class="dropdown-menu dropdown-menu-right p-3 animated--grow-in" aria-labelledby="searchDropdown">
+                                    <form class="form-inline mr-auto navbar-search w-100">
+                                        <div class="input-group"><input class="bg-light form-control border-0 small" type="text" placeholder="Search for ...">
+                                            <div class="input-group-append"><button class="btn btn-primary py-0" type="button"><i class="fas fa-search"></i></button></div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </li>
+
+
+                            <div class="d-none d-sm-block topbar-divider"></div>
+                            <li class="nav-item dropdown no-arrow">
+                                <div class="nav-item dropdown no-arrow"><a class="dropdown-toggle nav-link" data-toggle="dropdown" aria-expanded="false" href="#"><span class="d-none d-lg-inline mr-2 text-gray-600 small" id="username">@username</span><img class="border rounded-circle img-profile" id="dp" src="assets/img/avatars/avatar1.jpeg"></a>
+                                    <div class="dropdown-menu shadow dropdown-menu-right animated--grow-in">
+                                        <a class="dropdown-item" href="profile.html"><i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Profile</a>
+                                        <div class="dropdown-divider"></div><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>&nbsp;Logout</a>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+                <div class="timer">
+                    <label style="" id="count"></label>
+                </div>
+                <div class="">
+                    <br>
+                    <h4 class="text-dark" style="text-align: center; font-size: 40px; padding-bottom: 30px;">Answer Question!</h4>
+                </div>
+              
+                <div class="wrapper">
+                    <div class="title">
+                        <label style="color: white; font-size: 30px; padding-top: 10px; " id="sqnum"></label>
+                        <hr style="background-color: white;">
+                        <label id="quenum" hidden>1</label>
+                        <label id="sque" style="color: white; font-size: 30px; "></label>
+                    </div>
+                    <div class="box">
+                        <input type="radio" name="ans" id="optionA" value="A">
+                        <label for="optionA" class="optionA">
+                            <div class="select-dots"></div>
+                            <div class="text"><label style="border: none;" id="opA"></label></div>
+                    </label>
+                    <input type="radio" name="ans" id="optionB" value="B">
+                    <label for="optionB" class="optionB">
+                            <div class="select-dots"></div>
+                            <div class="text"><label style="border: none;" id="opB"></div>
+                        </label>
+
+                    <input type="radio" name="ans" id="optionC" value="C">
+                    <label for="optionC" class="optionC">
+                            <div class="select-dots"></div>
+                            <div class="text"><label style="border: none;" id="opC"></div>
+                        </label>
+
+                    <input type="radio" name="ans" id="optionD" value="D">
+                    <label for="optionD" class="optionD">
+                            <div class="select-dots"></div>
+                            <div class="text"><label style="border: none;" id="opD"></label></div>
+                </label>
+                <button class="btn btn-primary btn-block text-white btn-user" type="button" style="display:normal;" onclick="nextque(),storeans(),generateResult()" id="nextque">NEXT </button>
+                <button class="btn btn-primary btn-block text-white btn-user" type="button" style="display:none;" onclick="nextque(),storeans(),  generateResultSubmit()" id="lastque">SUBMIT </button>
+            </div>
+
+            <!-- <div class="user">
+                            <p style="color: black;" id="sqnum">Question Number:</p>
+                            <label id="quenum" hidden >1</label>
+                            
+                            <label style="color: black;">Question:</label>
+                            <br>
+                            <h4 id="sque"></h4>
+                            <input class="" name="ans" type="radio" id="optionA" value="A">
+                            <label id="opA">Option A</label>
+                            <br>
+                            <input class="" name="ans" type="radio" id="optionB" value="B">
+                            <label id="opB">Option B</label>
+                            <br>
+                            <input class="" name="ans" type="radio" id="optionC" value="C">
+                            <label id="opC">Option C</label>
+                            <br>
+                            <input class="" name="ans" type="radio" id="optionD" value="D">
+                            <label id="opD">Option D</label>
+                            
+                        </div>
+                        <button  class="btn btn-primary btn-block text-white btn-user" type="button" style="display:normal;"  onclick="nextque(),storeans(),generateResult()" id="nextque">NEXT </button>
+                        <button  class="btn btn-primary btn-block text-white btn-user" type="button" style="display:none;"  onclick="nextque(),storeans(),  generateResultSubmit()" id="lastque" >SUBMIT </button> -->
+
+
+
+            <div class="text-center"></div>
+            <div class="text-center"></div>
+        </div>
+    </div>
+    <footer class="bg-white sticky-footer" style="margin-top: 60px;">
+        <div class="container my-auto" style="margin:50px;">
+            <div class="text-center my-auto copyright"><span>Copyright © OEP 2020</span></div>
+        </div>
+    </footer>
+    </div><a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
+    <script src="assets/js/theme.js"></script>
+    <script src="main.js"></script>
+    <script src="firebase.js"></script>
+    <script>
+        // Next Question--------------------------------------------------------------------------------------------------------------------------------          
+        function nextque() {
+            var ClassID = sessionStorage.getItem("ClassID");
+            var SubjectKey = sessionStorage.getItem("SubjectKey");
+            var EID = sessionStorage.getItem("EID");
+            var i = document.getElementById("quenum").innerHTML;
+
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+
+                    var uid = firebase.auth().currentUser;
+
+                    if (user != null) {
+
+                        var uid = user.uid;
+                        var useremail = user.email;
+                        var instname;
+                        var totalque;
+
+                        firebase.database().ref().orderByChild('Student/' + uid + '/mailid').equalTo(useremail).once("value", function(snapshot) {
+                            snapshot.forEach(
+                                function(parent) {
+                                    instname = parent.key;
+                                });
+
+                            firebase.database().ref(instname + '/Class/' + ClassID + '/Subject/' + SubjectKey + '/Exam/' + EID).once('value', function(snapshot) {
+                                totalque = snapshot.child("totalque").val();
+                                marksperque = snapshot.child("Marksperque").val();
+                                var inttotal = parseInt(totalque);
+                                sessionStorage.setItem("totalque", inttotal);
+                                sessionStorage.setItem("marksperque", marksperque);
+                            });
+
+                            setTimeout(() => {
+                                firebase.database().ref(instname + '/Class/' + ClassID + '/Subject/' + SubjectKey + '/Exam/' + EID + '/Question').once('value', function(snapshot) {
+                                    snapshot.forEach(function(ChildSnapshot) {
+                                        var questionno = ChildSnapshot.key;
+                                        var total = sessionStorage.getItem("totalque");
+
+                                        if (questionno < total) {
+                                            if (questionno == i) {
+
+                                                var question = ChildSnapshot.child("question").val();
+                                                var optionA = ChildSnapshot.child("optionA").val();
+                                                var optionB = ChildSnapshot.child("optionB").val();
+                                                var optionC = ChildSnapshot.child("optionC").val();
+                                                var optionD = ChildSnapshot.child("optionD").val();
+
+                                                document.getElementById("sqnum").innerHTML = "Question No:" + questionno;
+                                                document.getElementById("sque").innerHTML = question;
+                                                document.getElementById("opA").innerHTML = optionA;
+                                                document.getElementById("opB").innerHTML = optionB;
+                                                document.getElementById("opC").innerHTML = optionC;
+                                                document.getElementById("opD").innerHTML = optionD;
+                                                sessionStorage.setItem("queno", questionno);
+
+                                                increment();
+                                            }
+                                        } else if (questionno == total) {
+                                            if (questionno == i) {
+
+                                                var question = ChildSnapshot.child("question").val();
+                                                var optionA = ChildSnapshot.child("optionA").val();
+                                                var optionB = ChildSnapshot.child("optionB").val();
+                                                var optionC = ChildSnapshot.child("optionC").val();
+                                                var optionD = ChildSnapshot.child("optionD").val();
+
+
+                                                document.getElementById("sqnum").innerHTML = "Question No: " + questionno;
+                                                document.getElementById("sque").innerHTML = question;
+                                                document.getElementById("opA").innerHTML = optionA;
+                                                document.getElementById("opB").innerHTML = optionB;
+                                                document.getElementById("opC").innerHTML = optionC;
+                                                document.getElementById("opD").innerHTML = optionD;
+                                                sessionStorage.setItem("queno", questionno);
+
+                                                increment();
+
+                                                var btn = document.getElementById("lastque");
+                                                btn.style = " display:normal;";
+                                                var btn1 = document.getElementById("nextque");
+                                                btn1.style = " display:none;";
+
+                                            }
+
+                                        }
+                                    });
+
+                                });
+                            }, 400);
+                        });
+                    }
+                } else {
+                    window.location.href = "login.html";
+                }
+            });
+        }
+
+
+        // Update Question If Already Given-------------------------------------------------------------------------------------------------------------
+        function updateques() {
+
+            var ClassID = sessionStorage.getItem("ClassID");
+            var SubjectKey = sessionStorage.getItem("SubjectKey");
+            var EID = sessionStorage.getItem("EID");
+            var i = document.getElementById("quenum").innerHTML;
+
+
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+
+                    var uid = firebase.auth().currentUser;
+
+                    if (user != null) {
+
+                        var uid = user.uid;
+                        var useremail = user.email;
+
+                        var instname;
+                        var totalque;
+
+                        firebase.database().ref().orderByChild('Student/' + uid + '/mailid').equalTo(useremail).once("value", function(snapshot) {
+                            snapshot.forEach(function(parent) {
+                                instname = parent.key;
+                            });
+
+
+                            firebase.database().ref(instname + '/Class/' + ClassID + '/Subject/' + SubjectKey + '/Exam/' + EID + '/Answer/' + uid).orderByKey().limitToLast(1).once('value', function(snapshot) {
+                                if (snapshot.exists()) {
+                                    snapshot.forEach(function(ChildSnapshot) {
+                                        var questionno = ChildSnapshot.key;
+                                        questionno++;
+                                        document.getElementById('quenum').innerHTML = questionno;
+                                        nextque();
+                                    });
+                                } else {
+                                    nextque();
+                                }
+
+
+                            });
+
+
+                        });
+                    }
+                } else {
+                    window.location.href = "login.html";
+                }
+            });
+
+        }
+
+
+
+        // Store Answer------------------------------------------------------------------------------------------------------------------------------------------
+        function storeans() {
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+
+                    var uid = firebase.auth().currentUser;
+                    if (user != null) {
+
+                        var uid = user.uid;
+                        var useremail = user.email;
+                        var name = user.displayName;
+                        var instname;
+                        var subkey;
+                        var ClassID = sessionStorage.getItem("ClassID");
+                        var SubjectKey = sessionStorage.getItem("SubjectKey");
+                        var EID = sessionStorage.getItem("EID");
+                        var queno = sessionStorage.getItem("queno");
+                        var ele = document.getElementsByName('ans');
+
+                        for (i = 0; i < ele.length; i++) {
+                            if (ele[i].checked)
+                                var Answer = ele[i].value;
+                        }
+                        let yourdata = {
+                            Ans: Answer
+                        };
+                        firebase.database().ref().orderByChild('Student/' + uid + '/mailid').equalTo(useremail).once("value", function(snapshot) {
+                            snapshot.forEach(
+                                function(parent) {
+                                    instname = parent.key;
+                                    sessionStorage.setItem("instname", instname);
+                                });
+
+                            firebase.database().ref(instname + "/Class/" + ClassID + "/Subject/" + SubjectKey + "/Exam/" + EID + "/Answer/" + uid).child(queno).set(yourdata).then(ok => $('input[name=ans]').prop('checked', false)).catch(console.error);
+                        });
+                    }
+                } else {
+                    window.location.href = "login.html";
+                }
+            });
+        }
+
+
+        //Increment Question Number----------------------------------------------------------------------------------------------------------------------
+        function increment() {
+            var i = document.getElementById("quenum").innerHTML;
+            i++;
+            document.getElementById("quenum").innerHTML = i;
+        }
+
+
+        //Generate Result--------------------------------------------------------------------------------------------------------------------------------
+        function generateResult() {
+            var instname;
+            var ClassID;
+            var Enroll;
+            var marks = 0;
+            var SubjectKey = sessionStorage.getItem("SubjectKey");
+            var EID = sessionStorage.getItem("EID");
+            var marksperque = sessionStorage.getItem("marksperque");
+            var marksperqueInt = parseInt(marksperque);
+            async: false;
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+                    var uid = firebase.auth().currentUser;
+                    if (user != null) {
+                        var uid = user.uid;
+                        var useremail = user.email;
+                        var name = user.displayName;
+
+                        firebase.database().ref().orderByChild('Student/' + uid + '/mailid').equalTo(useremail).once("value", function(snapshot) {
+                            snapshot.forEach(
+                                function(parent) {
+                                    instname = parent.key;
+                                    ClassID = parent.child('Student/' + uid + '/ClassID').val();
+                                    Enroll = parent.child('Student/' + uid + '/Enroll').val();
+
+                                });
+
+                            firebase.database().ref(instname + '/Class/' + ClassID + '/Subject/' + SubjectKey + '/Exam/' + EID + '/Answer/' + uid).once('value', function(snapshot) {
+                                snapshot.forEach(function(ChildSnapshot) {
+                                    var Studentans = ChildSnapshot.child('Ans').val();
+                                    var q = ChildSnapshot.key;
+                                    firebase.database().ref(instname + '/Class/' + ClassID + '/Subject/' + SubjectKey + '/Exam/' + EID + '/Question/' + q).once('value', function(snapshot) {
+                                        var Correct = snapshot.child('correct').val();
+                                        var a = snapshot.key;
+                                        var islast = snapshot.length;
+                                        var yourdata;
+                                        if (Studentans == Correct) {
+                                            marks = marks + marksperqueInt;
+
+                                        }
+                                        yourdata = { Marks: marks,Enroll: Enroll};
+                                        firebase.database().ref(instname + "/Class/" + ClassID + "/Subject/" + SubjectKey + "/Exam/" + EID + "/Result/").child(uid).set(yourdata).then(ok => console.log("Successful")).catch(console.error);
+
+                                    });
+
+                                });
+                            });
+                        });
+                    }
+                } else {
+                    window.location.href = "login.html";
+                }
+            });
+
+        }
+
+        //Generate Result of Last Button---------------------------------------------------------------------------------------------------------------
+        function generateResultSubmit() {
+            var instname;
+            var ClassID;
+            var Enroll;
+            var marks = 0;
+            var SubjectKey = sessionStorage.getItem("SubjectKey");
+            var EID = sessionStorage.getItem("EID");
+            var marksperque = sessionStorage.getItem("marksperque");
+            var marksperqueInt = parseInt(marksperque);
+            async: false;
+            firebase.auth().onAuthStateChanged((user) => {
+                if (user) {
+
+                    var uid = firebase.auth().currentUser;
+                    if (user != null) {
+
+                        var uid = user.uid;
+                        var useremail = user.email;
+                        var name = user.displayName;
+
+                        firebase.database().ref().orderByChild('Student/' + uid + '/mailid').equalTo(useremail).once("value", function(snapshot) {
+                            snapshot.forEach(
+                                function(parent) {
+                                    instname = parent.key;
+                                    ClassID = parent.child('Student/' + uid + '/ClassID').val();
+                                    Enroll = parent.child('Student/' + uid + '/Enroll').val();
+
+                                });
+
+
+                            firebase.database().ref(instname + '/Class/' + ClassID + '/Subject/' + SubjectKey + '/Exam/' + EID + '/Answer/' + uid).once('value', function(snapshot) {
+                                snapshot.forEach(function(ChildSnapshot) {
+                                    var Studentans = ChildSnapshot.child('Ans').val();
+                                    var q = ChildSnapshot.key;
+                                    firebase.database().ref(instname + '/Class/' + ClassID + '/Subject/' + SubjectKey + '/Exam/' + EID + '/Question/' + q).once('value', function(snapshot) {
+                                        var Correct = snapshot.child('correct').val();
+                                        var a = snapshot.key;
+                                        var islast = snapshot.length;
+                                        var yourdata;
+                                        if (Studentans == Correct) {
+                                            marks = marks + marksperqueInt;
+                                        }
+                                        yourdata = { Marks: marks,Enroll: Enroll};
+                                        firebase.database().ref(instname + "/Class/" + ClassID + "/Subject/" + SubjectKey + "/Exam/" + EID + "/Result/").child(uid).set(yourdata).then(ok => console.log("Successful")).catch(console.error);
+                                    });
+                                });
+                                redirect();
+                            });
+                        });
+                    }
+                } else {
+                    window.location.href = "login.html";
+                }
+            });
+        }
+        //CountDownTimer-------------------------------------------------------------------------------------------------------------------------------------
+        var now;
+        var countDownDate = sessionStorage.getItem("endTimestamp");
+        //Run myfunc every second
+        var myfunc = setInterval(function() {
+
+
+
+            firebase.database().ref('/.info/serverTimeOffset').once('value').then(function stv(data) {
+                now = data.val() + Date.now();
+            }, function(err) {
+                return err;
+            });
+            console.log(countDownDate);
+            var timeleft = countDownDate - now;
+
+            //Calculating the days, hours, minutes and seconds left
+            var days = Math.floor(timeleft / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((timeleft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((timeleft % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((timeleft % (1000 * 60)) / 1000);
+
+            // Result is output to the specific element
+            document.getElementById("count").innerHTML = "" + hours + "h " + minutes + "m " + seconds + "s ";
+
+
+            // // Display the message when countdown is over
+            if (timeleft < 0) {
+                clearInterval(myfunc);
+
+                alert("Time UP!!");
+                window.location.href = 'studentindex.html';
+            }
+        }, 1000);
+
+
+
+        // Redirecting to Home----------------------------------------------------------------------------------------------------------------------------
+        function redirect() {
+            setTimeout(() => {
+                var instname = sessionStorage.getItem("instname");
+                var ClassID = sessionStorage.getItem("ClassID");
+                var SubjectKey = sessionStorage.getItem("SubjectKey");
+                var EID = sessionStorage.getItem("EID");
+                firebase.database().ref(instname + '/Class/' + ClassID + '/Subject/' + SubjectKey + '/Exam/' + EID + '/Result').once('value', function(snapshot) {
+                    if (snapshot.exists()) {
+                        window.location.href = 'studentindex.html'
+                    }
+                });
+
+            }, 400);
+        }
+    </script>
+</body>
+
+</html>

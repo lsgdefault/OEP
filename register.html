@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+        <title>Register - OEP</title>
+        <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i">
+        <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+        <link rel="stylesheet" href="assets/fonts/font-awesome.min.css">
+        <link rel="stylesheet" href="assets/fonts/fontawesome5-overrides.min.css">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+        <link rel="stylesheet" href="assets/css/untitled.css">
+        <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-analytics.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+    </head>
+
+<body class="bg-gradient-primary" style="background: #75b2dd;" onLoad="getinstitute()">
+
+    <div class="container">
+        <div class="card shadow-lg o-hidden border-0 my-5">
+            <div class="card-body p-0">
+                <div class="row">
+                    <div class="col-lg-5 d-none d-lg-flex"><img class="d-xl-flex justify-content-center align-items-center align-content-center align-self-center mx-auto justify-content-xl-center align-items-xl-center" src="assets/img/images/oep-logo.jpg" style="width: 367px;height: 154px;"></div>
+                    <div class="col-lg-7">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h4 class="text-dark mb-4">Create an Account!</h4>
+                            </div>
+                                <div class="form-group">
+                                    <input class="form-control form-control-user" type="text" id="fname" aria-describedby="" placeholder="First Name" name="fname" style="margin-top: 17px;" required>
+                                    <input class="form-control form-control-user" type="text" id="mname" aria-describedby="" placeholder="Middle Name" name="mname" style="margin-top: 17px;"required>
+                                    <input class="form-control form-control-user" type="text" id="lname" aria-describedby="" placeholder="Last Name" name="lname" style="margin-top: 17px;" required>
+                                    <input class="form-control form-control-user" type="email" id="email" aria-describedby="" placeholder="Email Address" name="email" style="margin-top: 17px;" required>
+                                    <input class="form-control form-control-user" type="tel" id="phone" aria-describedby="" placeholder="Phone Number" name="phone" style="margin-top: 17px;" minlength="10" maxlength="10" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="sel1">Institute:</label>
+                                    <select class="form-control" id="dinstitute">
+                                      <option id="op"></option>
+                                    </select>
+                                    <a class="small" href="insitute.html">Can't find your Institute?,Click here</a>
+                                  </div>
+                                <div class="form-group row">
+                                    <div class="col-sm-6 mb-3 mb-sm-0"><input class="form-control form-control-user" type="password" id="pass" placeholder="Password" name="password"></div>
+                                    <div class="col-sm-6"><input class="form-control form-control-user" type="password" id="cpass" placeholder="Confirm Password" name="password_confirm"></div>
+                                </div><button class="btn btn-primary btn-block text-white btn-user" type="submit" onclick="facultyRegister()">Register Account</button>
+                        
+                                <hr>
+                            <div class="text-center"></div>
+                            <div class="text-center"><a class="small" href="login.html">Already have an account? Login!</a></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/jquery.min.js"></script>
+    <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/chart.min.js"></script>
+    <script src="assets/js/bs-init.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
+    <script src="assets/js/theme.js"></script>
+    
+    <script src="firebase.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
